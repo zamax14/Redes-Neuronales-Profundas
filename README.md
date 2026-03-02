@@ -49,7 +49,7 @@ El semestre está dividido en **5 tareas** de **20 puntos** cada una, organizada
 Cada carpeta de tarea contiene:
 
 - 📂 `T0X/` - Carpeta de la tarea X
-   - **📄 `AX.pdf`** - Enunciados de la tarea
+   - **📄 `T0X.pdf`** - Enunciados de la tarea
    - **📝 `t0X.tex`** - Desarrollo teórico de los problemas (LaTeX)
    - **💻 `t0X_alejandro_zarate_macias.ipynb`** - Problemas de programación (Jupyter Notebook)
    - **📊 `images/`** - Imágenes, gráficas y visualizaciones generadas
@@ -89,7 +89,7 @@ Cada carpeta de tarea contiene:
 
 | Semana | Enlace |
 |--------|--------|
-| **Semana 01** | TODO |
+| **Semana 01** | https://youtube.com/playlist?list=PL66A4_etiRmyptJbv0egbo_9yeuCrtNnf&si=R8wtQmoBgZqcrLn0 |
 | **Semana 02** | TODO |
 | **Semana 03** | TODO |
 | **Semana 04** | TODO |
