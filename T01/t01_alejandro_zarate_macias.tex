@@ -1,0 +1,154 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{gray},
+    showstringspaces=false,
+    frame=single,
+    breaklines=true
+}
+
+
+
+\title{Redes Neuronales Profundas (NN) - T01}
+\author{ALEJANDRO ZARATE MACIAS}
+\date{9 de Marzo 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+En esta tarea se abordan conceptos fundamentales de optimización numérica y álgebra lineal computacional como base para el estudio de las redes neuronales profundas. Se implementan y analizan distintos métodos de optimización, diferenciación automática y cálculo de autovalores, haciendo uso de PyTorch como herramienta principal.
+\end{abstract}
+
+
+% ========================================
+% SECCIÓN 1
+% ========================================
+\section{Problema 1}
+
+\subsection{Enunciado}
+
+\section*{Problema 1}
+
+Sea $\mathbf{x}$ y $\mathbf{1} := (1,1,\ldots,1)$ ambos en $\mathbb{R}^n$. Considere la función de Rosenbrock:
+
+\[
+f(\mathbf{x}) = \sum_{i=1}^{n-1} \left[ 100(x_{i+1} - x_i^2)^2 + (x_i - 1)^2 \right].
+\tag{1}
+\]
+
+Calcule $\nabla f(\mathbf{1})$ utilizando diferenciación automática en modo reverso (a mano) para $n = 5$.
+
+\subsection{Metodología}
+
+\subsection{Resultados}
+
+\subsection{Discusión}
+
+\subsection{Conclusión}
+
+
+% ========================================
+% SECCIÓN 2
+% ========================================
+\section{Problema 2}
+
+Haga un script en Python para calcular el autovalor de módulo máximo y su autovector correspondiente de una matriz simétrica $A \in \mathbb{R}^{n\times n}$. Use Pytorch en lugar de los paquetes Numpy/Scipy. Use el método de la potencia, descrito (por ejemplo) en \cite{golub1996matrix}, en la sección 8.2.1. A continuación, pruebe su programa con la siguiente matriz
+
+\[
+\left(
+\begin{array}{rrrr}
+-1.6407 & 1.0814 & 1.2014 & 1.1539 \\
+1.0814 & 4.1573 & 7.4035 & -1.0463 \\
+1.2014 & 7.4035 & 2.7890 & -1.5737 \\
+1.1539 & -1.0463 & -1.5737 & 8.6944
+\end{array}
+\right).
+\]
+
+\subsection{Enunciado}
+
+\subsection{Metodología}
+
+\subsection{Resultados}
+
+\subsection{Discusión}
+
+\subsection{Conclusión}
+
+
+% ========================================
+% SECCIÓN 3
+% ========================================
+\section{Problema 3}
+
+\subsection{Enunciado}
+
+Haga un script en Python usando Pytorch para minimizar la función (1) para $n = 10$ utilizando el método de Newton. Grafique cómo el error disminuye a medida que el algoritmo itera.
+
+\subsection{Metodología}
+
+\subsection{Resultados}
+
+\subsection{Discusión}
+
+\subsection{Conclusión}
+
+
+% ========================================
+% SECCIÓN 4
+% ========================================
+\section{Problema 4}
+
+\subsection{Enunciado}
+
+Haga un script en Python usando Pytorch para minimizar la función (1) para $n = 10$ utilizando el método BFGS. Grafique cómo el error disminuye a medida que el algoritmo itera.
+
+\subsection{Metodología}
+
+\subsection{Resultados}
+
+\subsection{Discusión}
+
+\subsection{Conclusión}
+
+
+% ========================================
+% SECCIÓN 5
+% ========================================
+\section{Problema 5}
+
+\subsection{Enunciado}
+
+Haga un script en Python usando Pytorch para minimizar la función (1) para $n = 10$ utilizando el método de Adam. Grafque cómo el error disminuye a medida que el algoritmo iteira.
+
+\subsection{Metodología}
+
+\subsection{Resultados}
+
+\subsection{Discusión}
+
+\subsection{Conclusión}
+
+
+% ========================================
+% REFERENCIAS
+% ========================================
+\bibliographystyle{plain}
+\bibliography{ref}
+
+\end{document}
