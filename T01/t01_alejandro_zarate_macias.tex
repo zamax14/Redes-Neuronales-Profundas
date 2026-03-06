@@ -36,41 +36,84 @@ En esta tarea se abordan conceptos fundamentales de optimización numérica y á
 
 
 % ========================================
-% SECCIÓN 1
+% SECCION 1
 % ========================================
 \section{Problema 1}
 
 \subsection{Enunciado}
 
-\section*{Problema 1}
-
-Sea $\mathbf{x}$ y $\mathbf{1} := (1,1,\ldots,1)$ ambos en $\mathbb{R}^n$. Considere la función de Rosenbrock:
+Sea $\mathbf{x}$ y $\mathbf{1} := (1,1,\ldots,1)$ ambos en $\mathbb{R}^n$. Considere la funcion de Rosenbrock:
 
 \[
 f(\mathbf{x}) = \sum_{i=1}^{n-1} \left[ 100(x_{i+1} - x_i^2)^2 + (x_i - 1)^2 \right].
 \tag{1}
 \]
 
-Calcule $\nabla f(\mathbf{1})$ utilizando diferenciación automática en modo reverso (a mano) para $n = 5$.
+Calcule $\nabla f(\mathbf{1})$ utilizando diferenciacion automatica en modo reverso (a mano) para $n = 5$.
 
-\subsection{Metodología}
+\subsection{Metodologia}
+
+La funcion de Rosenbrock para $n=5$ se descompone como suma de cuatro terminos ($i = 1, \ldots, 4$):
+\[
+f(\mathbf{x}) = \sum_{i=1}^{4} \underbrace{100(x_{i+1} - x_i^2)^2}_{a_i} + \underbrace{(x_i - 1)^2}_{b_i}
+\]
+
+Para calcular el gradiente en $\mathbf{x} = \mathbf{1}$ mediante diferenciacion automatica en modo reverso, se procede en dos fases:
+
+\textbf{Forward pass:} Se evaluan las variables intermedias en $\mathbf{x} = \mathbf{1}$:
+\begin{itemize}
+    \item $x_i^2 = 1$ para todo $i$.
+    \item $x_{i+1} - x_i^2 = 1 - 1 = 0$ para todo $i$.
+    \item $a_i = 100 \cdot 0^2 = 0$ para todo $i$.
+    \item $x_i - 1 = 0$ para todo $i$.
+    \item $b_i = 0^2 = 0$ para todo $i$.
+    \item $f(\mathbf{1}) = 0$.
+\end{itemize}
+
+\textbf{Backward pass:} Se propaga el adjunto $\bar{f} = 1$ hacia atras. Las derivadas parciales de cada termino son:
+\[
+\frac{\partial}{\partial x_i} \left[ 100(x_{i+1} - x_i^2)^2 \right] = -400 x_i (x_{i+1} - x_i^2)
+\]
+\[
+\frac{\partial}{\partial x_{i+1}} \left[ 100(x_{i+1} - x_i^2)^2 \right] = 200 (x_{i+1} - x_i^2)
+\]
+\[
+\frac{\partial}{\partial x_i} \left[ (x_i - 1)^2 \right] = 2(x_i - 1)
+\]
+
+Evaluando en $\mathbf{x} = \mathbf{1}$, todos los factores $(x_{i+1} - x_i^2)$ y $(x_i - 1)$ se anulan, por lo que cada derivada parcial se evalua en cero.
 
 \subsection{Resultados}
 
-\subsection{Discusión}
+El gradiente de la funcion de Rosenbrock evaluado en $\mathbf{x} = \mathbf{1} = (1,1,1,1,1)$ es:
+\[
+\nabla f(\mathbf{1}) = (0, 0, 0, 0, 0)
+\]
 
-\subsection{Conclusión}
+Esto es consistente con el hecho de que $\mathbf{1}$ es el minimo global de la funcion de Rosenbrock, donde $f(\mathbf{1}) = 0$.
+
+\subsection{Discusion}
+
+El resultado $\nabla f(\mathbf{1}) = \mathbf{0}$ confirma que $\mathbf{1}$ es un punto critico de $f$. Dado que la funcion de Rosenbrock es una suma de cuadrados y su valor minimo es cero (alcanzado unicamente en $\mathbf{x} = \mathbf{1}$), este punto critico es el minimo global.
+
+La diferenciacion automatica en modo reverso calcula el gradiente completo en una sola pasada hacia atras, independientemente de la dimension $n$. Esto la hace particularmente eficiente para funciones $f: \mathbb{R}^n \to \mathbb{R}$ con $n$ grande, que es exactamente el escenario de entrenamiento de redes neuronales donde se calcula el gradiente de la funcion de perdida respecto a todos los parametros.
+
+\subsection{Conclusion}
+
+Se verifico a mano, mediante diferenciacion automatica en modo reverso, que $\nabla f(\mathbf{1}) = \mathbf{0}$ para $n = 5$. Este resultado es esperado ya que $\mathbf{1}$ es el unico minimo global de la funcion de Rosenbrock. El ejercicio ilustra el mecanismo fundamental del backpropagation: propagar el adjunto de la salida hacia las entradas a traves del grafo computacional.
 
 
 % ========================================
-% SECCIÓN 2
+% SECCION 2
 % ========================================
 \section{Problema 2}
 
-Haga un script en Python para calcular el autovalor de módulo máximo y su autovector correspondiente de una matriz simétrica $A \in \mathbb{R}^{n\times n}$. Use Pytorch en lugar de los paquetes Numpy/Scipy. Use el método de la potencia, descrito (por ejemplo) en \cite{golub1996matrix}, en la sección 8.2.1. A continuación, pruebe su programa con la siguiente matriz
+\subsection{Enunciado}
+
+Haga un script en Python para calcular el autovalor de modulo maximo y su autovector correspondiente de una matriz simetrica $A \in \mathbb{R}^{n\times n}$. Use Pytorch en lugar de los paquetes Numpy/Scipy. Use el metodo de la potencia, descrito (por ejemplo) en \cite{golub1996matrix}, en la seccion 8.2.1. A continuacion, pruebe su programa con la siguiente matriz
 
 \[
-\left(
+A = \left(
 \begin{array}{rrrr}
 -1.6407 & 1.0814 & 1.2014 & 1.1539 \\
 1.0814 & 4.1573 & 7.4035 & -1.0463 \\
@@ -80,69 +123,324 @@ Haga un script en Python para calcular el autovalor de módulo máximo y su auto
 \right).
 \]
 
-\subsection{Enunciado}
+\subsection{Metodologia}
 
-\subsection{Metodología}
+El metodo de la potencia es un algoritmo iterativo para encontrar el autovalor de modulo maximo de una matriz. Dado un vector inicial aleatorio $q_0$ normalizado, en cada iteracion $k$ se calcula:
+\begin{enumerate}
+    \item $z_k = A q_{k-1}$ (multiplicacion matriz-vector).
+    \item $q_k = z_k / \|z_k\|_2$ (normalizacion).
+    \item $\lambda_k = q_k^T A q_k$ (cociente de Rayleigh).
+\end{enumerate}
+
+El proceso se repite hasta que $\|q_k - q_{k-1}\|_2 < \varepsilon$ con tolerancia $\varepsilon = 10^{-10}$. El algoritmo converge al autovector dominante, y el cociente de Rayleigh converge al autovalor correspondiente.
+
+Se implementa en PyTorch usando aritmetica de doble precision (\texttt{float64}) y se compara el resultado con \texttt{torch.linalg.eigh} como verificacion.
+
+\begin{lstlisting}
+q = torch.randn(A.shape[0], dtype=torch.float64)
+q = q / torch.norm(q)
+
+for k in range(max_iter):
+    z = A @ q
+    q_new = z / torch.norm(z)
+    if torch.norm(q_new - q) < tol:
+        break
+    q = q_new
+
+eigenvalue = q_new @ A @ q_new
+\end{lstlisting}
 
 \subsection{Resultados}
 
-\subsection{Discusión}
+El metodo de la potencia converge en 59 iteraciones con tolerancia $10^{-10}$:
 
-\subsection{Conclusión}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\hline
+\textbf{Metrica} & \textbf{Valor} \\
+\hline
+Autovalor de modulo maximo & 12.000050 \\
+Autovector & $(0.0645,\ 0.6416,\ 0.6041,\ -0.4682)$ \\
+Iteraciones & 59 \\
+\hline
+\end{tabular}
+\caption{Resultado del metodo de la potencia sobre la matriz $A$.}
+\label{tab:p2_result}
+\end{table}
+
+La verificacion con \texttt{torch.linalg.eigh} confirma el mismo autovalor (12.000050) y un autovector con la misma direccion (difiere unicamente en signo, lo cual es valido ya que si $v$ es autovector, $-v$ tambien lo es).
+
+\subsection{Discusion}
+
+El metodo de la potencia convergió en 59 iteraciones, lo cual refleja la razon entre el autovalor dominante y el segundo autovalor en magnitud. La velocidad de convergencia del metodo depende del cociente $|\lambda_2 / \lambda_1|$: cuanto mas cercano a 1, mas lenta es la convergencia. En este caso, la convergencia es razonablemente rapida, lo que sugiere una separacion adecuada entre los dos autovalores de mayor modulo.
+
+El autovector obtenido difiere en signo respecto al de \texttt{torch.linalg.eigh}, lo cual es esperado: los autovectores estan definidos salvo un factor escalar, y en particular el signo depende de la inicializacion aleatoria del vector $q_0$. Ambos resultados son equivalentes.
+
+\subsection{Conclusion}
+
+Se implemento exitosamente el metodo de la potencia usando PyTorch para calcular el autovalor de modulo maximo ($\lambda_1 = 12.000050$) y su autovector correspondiente. El resultado coincide exactamente con la verificacion numerica de \texttt{torch.linalg.eigh}, validando la implementacion. El metodo es simple, eficiente en memoria (solo requiere almacenar un vector) y adecuado para matrices grandes donde solo se necesita el autovalor dominante.
 
 
 % ========================================
-% SECCIÓN 3
+% SECCION 3
 % ========================================
 \section{Problema 3}
 
 \subsection{Enunciado}
 
-Haga un script en Python usando Pytorch para minimizar la función (1) para $n = 10$ utilizando el método de Newton. Grafique cómo el error disminuye a medida que el algoritmo itera.
+Haga un script en Python usando Pytorch para minimizar la funcion (1) para $n = 10$ utilizando el metodo de Newton. Grafique como el error disminuye a medida que el algoritmo itera.
 
-\subsection{Metodología}
+\subsection{Metodologia}
+
+El metodo de Newton para optimizacion utiliza informacion de segundo orden (la Hessiana) para encontrar la direccion de descenso optima. En cada iteracion $k$:
+\begin{enumerate}
+    \item Se calcula el gradiente $g_k = \nabla f(x_k)$.
+    \item Se calcula la Hessiana $H_k = \nabla^2 f(x_k)$.
+    \item Se resuelve el sistema lineal $H_k d_k = -g_k$ para obtener la direccion de Newton $d_k$.
+    \item Se actualiza $x_{k+1} = x_k + d_k$.
+\end{enumerate}
+
+El algoritmo converge cuando $\|g_k\|_2 < 10^{-10}$. Se utiliza el punto inicial $x_0 = \mathbf{0} \in \mathbb{R}^{10}$.
+
+Tanto el gradiente como la Hessiana se calculan mediante diferenciacion automatica de PyTorch. El gradiente se obtiene con \texttt{torch.autograd.grad} con \texttt{create\_graph=True} para permitir la diferenciacion de segundo orden, y la Hessiana se construye diferenciando cada componente del gradiente.
+
+\begin{lstlisting}
+g = torch.autograd.grad(f, x, create_graph=True)[0]
+
+H = torch.zeros(n, n, dtype=torch.float64)
+for i in range(n):
+    H[i] = torch.autograd.grad(g[i], x, 
+                retain_graph=True)[0]
+
+d = torch.linalg.solve(H, -g.detach())
+x = (x.detach() + d).requires_grad_(True)
+\end{lstlisting}
 
 \subsection{Resultados}
 
-\subsection{Discusión}
+El metodo de Newton converge en \textbf{17 iteraciones} alcanzando $f(x^*) \approx 0$ con norma del gradiente $\|g\| = 0$.
 
-\subsection{Conclusión}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\hline
+\textbf{Metrica} & \textbf{Valor} \\
+\hline
+Iteraciones hasta convergencia & 17 \\
+Valor minimo $f(x^*)$ & $\approx 0$ \\
+$\|\nabla f(x^*)\|$ & $0.00$ \\
+\hline
+\end{tabular}
+\caption{Resultado del metodo de Newton sobre Rosenbrock ($n=10$).}
+\label{tab:p3_result}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/p3_newton.png}
+    \caption{Convergencia del metodo de Newton: $f(x)$ vs iteracion (escala logaritmica).}
+    \label{fig:p3_newton}
+\end{figure}
+
+\subsection{Discusion}
+
+La grafica de convergencia muestra un comportamiento caracteristico del metodo de Newton. En las primeras iteraciones (0--8), el valor de la funcion no disminuye de forma monotona e incluso aumenta ligeramente, lo que indica que el metodo de Newton puro (sin busqueda de linea) puede dar pasos que temporalmente empeoran el objetivo. Esto ocurre porque la aproximacion cuadratica local no es globalmente precisa lejos del minimo.
+
+Sin embargo, una vez que el iterante se acerca suficientemente al minimo (alrededor de la iteracion 8), se observa la convergencia cuadratica tipica del metodo: el error cae de $10^{1}$ a $10^{-20}$ en apenas 7 iteraciones. Esta es la principal ventaja del metodo de Newton: cuando esta cerca del optimo, cada iteracion esencialmente eleva al cuadrado la precision.
+
+El costo por iteracion es $O(n^3)$ debido a la resolucion del sistema lineal $H d = -g$, y $O(n^2)$ para construir la Hessiana. Para $n = 10$ esto es perfectamente viable, pero se vuelve prohibitivo para problemas de gran escala como el entrenamiento de redes neuronales profundas.
+
+\subsection{Conclusion}
+
+El metodo de Newton converge en solo 17 iteraciones al minimo global de Rosenbrock para $n = 10$, exhibiendo la convergencia cuadratica esperada en la fase final. Su eficiencia en numero de iteraciones es notable, pero el costo de calcular y factorizar la Hessiana en cada paso limita su aplicabilidad a problemas de dimension moderada.
 
 
 % ========================================
-% SECCIÓN 4
+% SECCION 4
 % ========================================
 \section{Problema 4}
 
 \subsection{Enunciado}
 
-Haga un script en Python usando Pytorch para minimizar la función (1) para $n = 10$ utilizando el método BFGS. Grafique cómo el error disminuye a medida que el algoritmo itera.
+Haga un script en Python usando Pytorch para minimizar la funcion (1) para $n = 10$ utilizando el metodo BFGS. Grafique como el error disminuye a medida que el algoritmo itera.
 
-\subsection{Metodología}
+\subsection{Metodologia}
+
+El metodo BFGS (Broyden--Fletcher--Goldfarb--Shanno) es un metodo quasi-Newton que aproxima la inversa de la Hessiana sin calcularla explicitamente. Se mantiene una matriz $B_k^{-1}$ que se actualiza en cada iteracion usando unicamente informacion de gradientes.
+
+El algoritmo procede asi:
+\begin{enumerate}
+    \item Se inicializa $B_0^{-1} = I$ (identidad).
+    \item En cada iteracion $k$:
+    \begin{itemize}
+        \item Se calcula la direccion de descenso $d_k = -B_k^{-1} g_k$.
+        \item Se realiza busqueda de linea por backtracking con condicion de Armijo para encontrar el paso $\alpha_k$.
+        \item Se calculan $s_k = \alpha_k d_k$ y $y_k = g_{k+1} - g_k$.
+        \item Se actualiza $B_{k+1}^{-1}$ con la formula BFGS:
+        \[
+        B_{k+1}^{-1} = V_k^T B_k^{-1} V_k + \rho_k s_k s_k^T
+        \]
+        donde $\rho_k = 1 / (s_k^T y_k)$ y $V_k = I - \rho_k y_k s_k^T$.
+    \end{itemize}
+\end{enumerate}
+
+Se utiliza $x_0 = \mathbf{0}$, tolerancia $10^{-10}$ sobre la norma del gradiente, y parametros de Armijo $c_1 = 10^{-4}$, $\rho = 0.5$.
+
+\begin{lstlisting}
+d = -B_inv @ g
+
+# Busqueda de linea (Armijo)
+alpha = 1.0
+while rosenbrock(x + alpha*d) > f + c1*alpha*(g @ d):
+    alpha *= rho
+
+s = alpha * d
+y = g_new - g
+
+# Actualizacion BFGS
+rho_k = 1.0 / (s @ y)
+V = I - rho_k * torch.outer(s, y)
+B_inv = V @ B_inv @ V.T + rho_k * torch.outer(s, s)
+\end{lstlisting}
 
 \subsection{Resultados}
 
-\subsection{Discusión}
+El metodo BFGS converge en \textbf{74 iteraciones} alcanzando $f(x^*) \approx 0$ con norma del gradiente $\|g\| \approx 9.12 \times 10^{-11}$.
 
-\subsection{Conclusión}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\hline
+\textbf{Metrica} & \textbf{Valor} \\
+\hline
+Iteraciones hasta convergencia & 74 \\
+Valor minimo $f(x^*)$ & $\approx 0$ \\
+$\|\nabla f(x^*)\|$ & $9.12 \times 10^{-11}$ \\
+\hline
+\end{tabular}
+\caption{Resultado del metodo BFGS sobre Rosenbrock ($n=10$).}
+\label{tab:p4_result}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/p4_bfgs.png}
+    \caption{Convergencia del metodo BFGS: $f(x)$ vs iteracion (escala logaritmica).}
+    \label{fig:p4_bfgs}
+\end{figure}
+
+\subsection{Discusion}
+
+A diferencia del metodo de Newton, BFGS muestra una convergencia monotona y suave durante toda la optimizacion, gracias a la busqueda de linea que garantiza descenso suficiente en cada paso (condicion de Armijo). Esto contrasta con los incrementos temporales que se observaron en Newton sin busqueda de linea.
+
+BFGS requiere 74 iteraciones frente a las 17 de Newton, lo cual refleja que la aproximacion de la Hessiana tarda varias iteraciones en acumularse y reflejar la curvatura real de la funcion. Sin embargo, el costo por iteracion es significativamente menor: BFGS solo necesita un calculo de gradiente ($O(n)$) y una multiplicacion matriz-vector ($O(n^2)$) por iteracion, frente al $O(n^3)$ de resolver el sistema Hessiano en Newton.
+
+La curva de convergencia muestra tres regiones distinguibles: una fase lenta inicial (iteraciones 0--40) donde la aproximacion $B^{-1}$ aun no refleja bien la curvatura, una fase de transicion (40--55) donde la convergencia se acelera notablemente, y una fase final de convergencia superlineal (55--74) donde el error cae rapido de $10^{-3}$ a $10^{-23}$.
+
+\subsection{Conclusion}
+
+BFGS converge al minimo global en 74 iteraciones con una curva de convergencia monotona y estable. Aunque requiere mas iteraciones que Newton, evita el calculo explicito de la Hessiana, lo que lo hace mas practico para problemas de dimension moderada. La convergencia superlineal observada en la fase final confirma que la aproximacion BFGS de la Hessiana mejora progresivamente a medida que se acumula informacion de curvatura.
 
 
 % ========================================
-% SECCIÓN 5
+% SECCION 5
 % ========================================
 \section{Problema 5}
 
 \subsection{Enunciado}
 
-Haga un script en Python usando Pytorch para minimizar la función (1) para $n = 10$ utilizando el método de Adam. Grafque cómo el error disminuye a medida que el algoritmo iteira.
+Haga un script en Python usando Pytorch para minimizar la funcion (1) para $n = 10$ utilizando el metodo de Adam. Grafique como el error disminuye a medida que el algoritmo itera.
 
-\subsection{Metodología}
+\subsection{Metodologia}
+
+Adam (Adaptive Moment Estimation) es un metodo de optimizacion de primer orden basado en gradiente estocastico con estimaciones adaptativas de momentos de primer y segundo orden. En cada iteracion, Adam mantiene:
+\begin{itemize}
+    \item $m_t$: media movil exponencial del gradiente (primer momento).
+    \item $v_t$: media movil exponencial del gradiente al cuadrado (segundo momento).
+\end{itemize}
+
+Las actualizaciones con correccion de sesgo son:
+\[
+\hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1 - \beta_2^t}, \quad x_{t+1} = x_t - \frac{\eta}{\sqrt{\hat{v}_t} + \epsilon} \hat{m}_t
+\]
+
+Se utiliza la implementacion de \texttt{torch.optim.Adam} con parametros por defecto ($\beta_1 = 0.9$, $\beta_2 = 0.999$, $\epsilon = 10^{-8}$) y tasa de aprendizaje $\eta = 0.001$. Se ejecutan 50,000 iteraciones desde $x_0 = \mathbf{0}$.
+
+\begin{lstlisting}
+optimizer = torch.optim.Adam([x], lr=0.001)
+
+for k in range(50000):
+    optimizer.zero_grad()
+    f = rosenbrock(x)
+    f.backward()
+    optimizer.step()
+\end{lstlisting}
 
 \subsection{Resultados}
 
-\subsection{Discusión}
+Tras 50,000 iteraciones, Adam alcanza $f(x^*) \approx 2.81 \times 10^{-6}$ con norma del gradiente $\|g\| \approx 9.43 \times 10^{-2}$.
 
-\subsection{Conclusión}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\hline
+\textbf{Metrica} & \textbf{Valor} \\
+\hline
+Iteraciones ejecutadas & 50,000 \\
+Valor minimo $f(x^*)$ & $2.81 \times 10^{-6}$ \\
+$\|\nabla f(x^*)\|$ & $9.43 \times 10^{-2}$ \\
+\hline
+\end{tabular}
+\caption{Resultado del metodo Adam sobre Rosenbrock ($n=10$).}
+\label{tab:p5_result}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/p5_adam.png}
+    \caption{Convergencia del metodo Adam: $f(x)$ vs iteracion (escala logaritmica).}
+    \label{fig:p5_adam}
+\end{figure}
+
+\subsection{Discusion}
+
+La grafica de convergencia de Adam revela un comportamiento muy diferente al de Newton y BFGS. En las primeras 1,000 iteraciones, $f(x)$ desciende rapidamente de $\sim 10$ a $\sim 10^{-4}$. Sin embargo, a partir de ese punto, la curva muestra oscilaciones persistentes que abarcan varios ordenes de magnitud (entre $10^{-19}$ y $10^{-4}$).
+
+Este comportamiento oscilatorio es inherente a Adam cuando se aplica a funciones deterministas: la tasa de aprendizaje fija y los momentos adaptativos impiden que el algoritmo se estabilice en el minimo exacto. A diferencia de Newton y BFGS que convergen a $f = 0$ con precision de maquina, Adam se estanca alrededor de $f \approx 10^{-6}$ como mejor valor promedio, con una norma del gradiente de $9.43 \times 10^{-2}$ que esta lejos de cero.
+
+Esto no significa que Adam sea un mal optimizador. Adam fue disenado para el entrenamiento de redes neuronales, donde la funcion de perdida se evalua sobre minibatches ruidosos y la convergencia exacta no es necesaria ni deseable. En ese contexto, las oscilaciones actuan como una forma de regularizacion implicita. Sin embargo, para optimizacion determinista de funciones suaves como Rosenbrock, los metodos de segundo orden (Newton, BFGS) son claramente superiores.
+
+\subsection{Conclusion}
+
+Adam reduce el valor de Rosenbrock en varios ordenes de magnitud rapidamente, pero no logra converger al minimo exacto debido a su tasa de aprendizaje fija y las oscilaciones inherentes de los momentos adaptativos. Para funciones suaves deterministas, los metodos quasi-Newton (BFGS) y de segundo orden (Newton) son significativamente mas efectivos en alcanzar alta precision.
+
+
+% ========================================
+% COMPARACION GENERAL
+% ========================================
+\section{Comparacion de los metodos de optimizacion}
+
+A modo de resumen, se comparan los tres metodos aplicados a la funcion de Rosenbrock ($n = 10$):
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\hline
+\textbf{Metrica} & \textbf{Newton} & \textbf{BFGS} & \textbf{Adam} \\
+\hline
+Iteraciones       & 17       & 74         & 50,000 \\
+$f(x^*)$          & $\approx 0$   & $\approx 0$     & $2.81 \times 10^{-6}$ \\
+$\|\nabla f\|$    & $0$      & $9.12 \times 10^{-11}$ & $9.43 \times 10^{-2}$ \\
+Costo/iter        & $O(n^3)$ & $O(n^2)$   & $O(n)$ \\
+Convergencia      & Cuadratica & Superlineal & Sublineal \\
+\hline
+\end{tabular}
+\caption{Comparacion de los tres metodos de optimizacion sobre Rosenbrock ($n=10$).}
+\label{tab:comparacion}
+\end{table}
+
+Newton es el mas rapido en numero de iteraciones gracias a la informacion exacta de segundo orden, pero su costo cubico por iteracion lo limita a dimensiones bajas. BFGS logra un buen balance entre velocidad de convergencia y costo computacional. Adam, aunque es el mas lento y menos preciso para este problema, es el unico que escala a los millones de parametros tipicos de redes neuronales profundas, donde el calculo de la Hessiana o su aproximacion son inviables.
 
 
 % ========================================
