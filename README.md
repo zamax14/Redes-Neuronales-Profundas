@@ -29,7 +29,13 @@ El semestre está dividido en **5 tareas** de **20 puntos** cada una, organizada
 
 ```
 ├── 📁 T01
-│   └── ⚙️ .gitkeep
+│   ├── 📁 images
+│   │   └── 🖼️ <graficas de los problemas>
+│   ├── 📄 T01.pdf
+│   ├── 📄 ref.bib
+│   ├── 📝 t01_alejandro_zarate_macias.ipynb
+│   ├── 📄 t01_alejandro_zarate_macias.pdf
+│   └── 📝 t01_alejandro_zarate_macias.tex
 ├── 📁 T02
 │   └── ⚙️ .gitkeep
 ├── 📁 T03
